@@ -1,16 +1,17 @@
 #include <Windows.h>
 #include <chrono>
 #include <thread>
+#include "utils/hook_mgr.h"
 
 auto __stdcall entry_loop(void* hinstance) -> unsigned long {
-    // initialize hooks or smth
+    utils::hook_mgr::init();
 
     while (!(GetAsyncKeyState(VK_NUMPAD0))) { // looooop
         using namespace std::chrono_literals;
         std::this_thread::sleep_for(150ms);
     }
 
-    // please revert it back to original state xd
+    utils::hook_mgr::finish();
 
     FreeLibraryAndExitThread((HMODULE)hinstance, 0);
 }
