@@ -4,15 +4,23 @@
 #include "utils/hook_mgr.h"
 
 auto __stdcall entry_loop(void *hinstance) -> unsigned long {
-    utils::hook_mgr::init();
+#ifdef DEBUG
+    AllocConsole();
+    freopen_s((FILE **) stdout, "CONOUT$", "w", stdout); // redirect stdout stream to console.
+#endif
 
-    while (!(GetAsyncKeyState(VK_NUMPAD0))) {
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(150ms);
+    {
+        utils::hook_mgr::init();
+
+        while (!(GetAsyncKeyState(VK_NUMPAD0))) {
+            using namespace std::chrono_literals;
+            std::this_thread::sleep_for(150ms);
+        }
+
+        utils::hook_mgr::finish();
     }
 
-    utils::hook_mgr::finish();
-
+    FreeConsole(); // detach console (if it's there).
     FreeLibraryAndExitThread((HMODULE) hinstance, 0);
 }
 
