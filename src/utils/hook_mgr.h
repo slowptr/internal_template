@@ -2,6 +2,7 @@
 #define INTERNAL_TEMPLATE_HOOK_MGR_H
 
 #include <MinHook.h>
+#include "../process/hooks/example_hook.h"
 
 namespace utils::hook_mgr {
     auto init() -> bool {
@@ -10,7 +11,14 @@ namespace utils::hook_mgr {
         if (MH_Initialize() != MH_OK)
             return false;
 
+        {
+            using namespace process::hooks;
+            if (!MH_CreateHook(reinterpret_cast<void *>(example_hook::get_address()),
+                               example_hook::function,
+                               reinterpret_cast<void **>(&example_hook::original)))
+                return false;
 
+        }
 
         if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)
             return false;
