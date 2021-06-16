@@ -5,7 +5,7 @@
 
 namespace features {
     struct example_feature_t : feature_t {
-        void function() override {
+        auto function() -> void override {
 
         }
     };

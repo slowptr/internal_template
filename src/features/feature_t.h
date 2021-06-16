@@ -6,17 +6,17 @@
 
 namespace features {
     struct feature_t {
-        std::thread get_thread() {
+        auto get_thread() -> std::thread {
             return std::thread{_run_func, this};
         }
-        virtual void function() {
+        virtual auto function() -> void {
             std::cout << "[WARN] no feature to be executed." << std::endl;
         }
 
         bool panic = false;
 
     private:
-        static void _run_func(feature_t* feature) {
+        static auto _run_func(feature_t* feature) -> void {
             if (feature->panic)
                 return;
 
