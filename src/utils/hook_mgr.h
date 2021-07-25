@@ -5,29 +5,48 @@
 
 #include "../process/hooks/example_hook.h"
 
-#define ADD_HOOK(x)                                                        \
-    MH_CreateHook(reinterpret_cast<void *>(x::get_address()), x::function, \
-                  reinterpret_cast<void **>(&x::original))
+// #define ADD_HOOK(x)                                                        \
+//    MH_CreateHook(reinterpret_cast<void *>(x::get_address()), x::function, \
+//                  reinterpret_cast<void **>(&x::original))
 
 namespace utils::hook_mgr {
     auto init() -> bool {
-        // maybe replace false-returns with exceptions
-
-        if (MH_Initialize() != MH_OK) return false;
+        if (MH_Initialize() != MH_OK)
+            throw std::runtime_error(
+                "utils::hook_mgr::init():"
+                "MH_Initialize() != MH_OK");
 
         {
             using namespace process::hooks;
-            if (!ADD_HOOK(example_hook)) return false;
+
+            if (MH_CreateHook(reinterpret_cast<void *>(example_hook::get_address()),
+                              example_hook::function,
+                              reinterpret_cast<void **>(&example_hook::original)) != MH_OK)
+                throw std::runtime_error(
+                    "utils::hook_mgr::init():"
+                    "MH_CreateHook(example_hook) != MH_OK");
         }
 
-        if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK) return false;
+        if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)
+            throw std::runtime_error(
+                "utils::hook_mgr::init():"
+                "MH_EnableHook(MH_ALL_HOOKS) != MH_OK");
 
         return true;
     }
 
     auto finish() -> bool {
-        return (MH_DisableHook(MH_ALL_HOOKS) == MH_OK &&
-                MH_Uninitialize() == MH_OK);
+        if (MH_DisableHook(MH_ALL_HOOKS) != MH_OK)
+            throw std::runtime_error(
+                "utils::hook_mgr::finish():"
+                "MH_DisableHook(MH_ALL_HOOKS) != MH_OK");
+
+        if (MH_Uninitialize() != MH_OK)
+            throw std::runtime_error(
+                "utils::hook_mgr::finish():"
+                "MH_Uninitialize() != MH_OK");
+
+        return true;
     }
 }  // namespace utils::hook_mgr
 

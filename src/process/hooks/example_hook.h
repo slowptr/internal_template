@@ -8,8 +8,7 @@
 namespace process::hooks::example_hook {
     auto get_address() -> uint32_t {
         // return address;
-        return utils::pattern_scan("module_name.dll",
-                                   "AA ?? BB ?? CC ?? DD ?? EE ?? FF");
+        return utils::pattern_scan("module_name.dll", "AA ?? BB ?? CC ?? DD ?? EE ?? FF");
     }
 
     using type = void(__cdecl *)(void *);
