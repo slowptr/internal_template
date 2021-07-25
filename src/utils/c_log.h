@@ -1,10 +1,11 @@
-#ifndef INTERNAL_TEMPLATE_LOG_T_H
-#define INTERNAL_TEMPLATE_LOG_T_H
+#ifndef INTERNAL_TEMPLATE_C_LOG_H
+#define INTERNAL_TEMPLATE_C_LOG_H
 
 #include <stdexcept>
 
 namespace utils {
-    struct log_t {
+    class c_log {
+       public:
         auto set_console_handle(void* handle) -> void { cmd_handle = handle; }
         auto info(const std::string& msg) -> void {
             SetConsoleTextAttribute(cmd_handle, 8);
@@ -21,7 +22,7 @@ namespace utils {
         auto  reset_color() -> void { SetConsoleTextAttribute(cmd_handle, 15); }
         void* cmd_handle{};
     };
-    inline log_t m_log;
+    inline c_log g_log;
 }  // namespace utils
 
-#endif  // INTERNAL_TEMPLATE_LOG_T_H
+#endif  // INTERNAL_TEMPLATE_C_LOG_H

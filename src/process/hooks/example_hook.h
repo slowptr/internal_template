@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <mutex>
 
-#include "../../utils/log_t.h"
+#include "../../utils/c_log.h"
 #include "../../utils/pattern_scan.h"
 
 namespace process::hooks::example_hook {
@@ -13,7 +13,7 @@ namespace process::hooks::example_hook {
 
         std::stringstream stream;
         stream << "process::hooks::example_hook::get_address(): 0x" << std::hex << address;
-        utils::m_log.info(stream.str());
+        utils::g_log.info(stream.str());
 
         return address;
     }
@@ -24,7 +24,7 @@ namespace process::hooks::example_hook {
     auto function(void *a1) -> void {
         static std::once_flag flag;
         std::call_once(flag, [&]() {
-            utils::m_log.info("process::hooks::example_hook::function() hooking successful.");
+            utils::g_log.info("process::hooks::example_hook::function() hooking successful.");
         });
     }
 }  // namespace process::hooks::example_hook

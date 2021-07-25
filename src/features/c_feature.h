@@ -1,11 +1,12 @@
-#ifndef INTERNAL_TEMPLATE_FEATURE_T_H
-#define INTERNAL_TEMPLATE_FEATURE_T_H
+#ifndef INTERNAL_TEMPLATE_C_FEATURE_H
+#define INTERNAL_TEMPLATE_C_FEATURE_H
 
 #include <iostream>
 #include <thread>
 
 namespace features {
-    struct feature_t {
+    class c_feature {
+       public:
         auto         get_thread() -> std::thread { return std::thread{_run_func, this}; }
         virtual auto function() -> void {
             std::cout << "[WARN] no feature to be executed." << std::endl;
@@ -14,7 +15,7 @@ namespace features {
         bool panic = false;
 
        private:
-        static auto _run_func(feature_t* feature) -> void {
+        static auto _run_func(c_feature* feature) -> void {
             if (feature->panic) return;
 
             feature->function();
@@ -22,4 +23,4 @@ namespace features {
     };
 }  // namespace features
 
-#endif  // INTERNAL_TEMPLATE_FEATURE_T_H
+#endif  // INTERNAL_TEMPLATE_C_FEATURE_H

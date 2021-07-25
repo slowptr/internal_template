@@ -12,6 +12,6 @@ add_library(internal_template SHARED
         src/process/hooks/example_hook.h
         src/utils/pattern_scan.h
         src/process/structs/example_struct_t.h
-        src/features/feature_t.h
-        src/features/example_feature_t.h src/utils/log_t.h)
+        src/features/c_feature.h
+        src/features/example_feature_t.h src/utils/c_log.h)
 target_link_libraries(internal_template PRIVATE libMinHook-x86-v141-md)
