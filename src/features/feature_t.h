@@ -6,7 +6,7 @@
 
 namespace features {
     struct feature_t {
-        auto get_thread() -> std::thread { return std::thread{_run_func, this}; }
+        auto         get_thread() -> std::thread { return std::thread{_run_func, this}; }
         virtual auto function() -> void {
             std::cout << "[WARN] no feature to be executed." << std::endl;
         }

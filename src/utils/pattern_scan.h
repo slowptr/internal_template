@@ -12,7 +12,7 @@ namespace utils {
             std::vector<std::size_t> bytes;
 
             auto start = const_cast<char *>(pattern);
-            auto end = const_cast<char *>(pattern) + std::strlen(pattern);
+            auto end   = const_cast<char *>(pattern) + std::strlen(pattern);
             for (auto current = start; current < end; ++current) {
                 if (*current == '?') {
                     ++current;
@@ -39,8 +39,8 @@ namespace utils {
         auto image_size = module_info.SizeOfImage;
         if (!image_size) return -1;
 
-        auto pattern_bytes = pattern_to_byte(pattern.data());
-        auto signature_size = pattern_bytes.size();
+        auto pattern_bytes   = pattern_to_byte(pattern.data());
+        auto signature_size  = pattern_bytes.size();
         auto signature_bytes = pattern_bytes.data();
 
         for (unsigned long i = 0; i < image_size - signature_size; ++i) {
