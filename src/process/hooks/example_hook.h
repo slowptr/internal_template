@@ -2,6 +2,7 @@
 #define INTERNAL_TEMPLATE_EXAMPLE_HOOK_H
 
 #include <cstdint>
+#include <mutex>
 
 #include "../../utils/log_t.h"
 #include "../../utils/pattern_scan.h"
@@ -20,7 +21,12 @@ namespace process::hooks::example_hook {
     using type = void(__cdecl *)(void *);
     type original;
 
-    auto function(void *a1) -> void {}
+    auto function(void *a1) -> void {
+        static std::once_flag flag;
+        std::call_once(flag, [&]() {
+            utils::m_log.info("process::hooks::example_hook::function() hooking successful.");
+        });
+    }
 }  // namespace process::hooks::example_hook
 
 #endif  // INTERNAL_TEMPLATE_EXAMPLE_HOOK_H
