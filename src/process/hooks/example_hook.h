@@ -3,12 +3,18 @@
 
 #include <cstdint>
 
+#include "../../utils/log_t.h"
 #include "../../utils/pattern_scan.h"
 
 namespace process::hooks::example_hook {
     auto get_address() -> uint32_t {
-        // return address;
-        return utils::pattern_scan("module_name.dll", "AA ?? BB ?? CC ?? DD ?? EE ?? FF");
+        auto address = utils::pattern_scan("module_name.dll", "AA ?? BB ?? CC ?? DD ?? EE ?? FF");
+
+        std::stringstream stream;
+        stream << "process::hooks::example_hook::get_address(): 0x" << std::hex << address;
+        utils::m_log.info(stream.str());
+
+        return address;
     }
 
     using type = void(__cdecl *)(void *);

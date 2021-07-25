@@ -6,11 +6,13 @@
 
 #include "utils/hook_mgr.h"
 
+#define DEBUG
+
 auto __stdcall entry_loop(void *hinstance) -> unsigned long {
 #ifdef DEBUG
     AllocConsole();
-    freopen_s((FILE **)stdout, "CONOUT$", "w",
-              stdout);  // redirect stdout stream to console.
+    freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);  // redirect stdout stream to console.
+    utils::m_log.set_console_handle(GetStdHandle(STD_OUTPUT_HANDLE));
 #endif
 
     try {
@@ -24,9 +26,10 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
         utils::hook_mgr::finish();
 
     } catch (const std::runtime_error &e) {
-        std::cout << "[?] " << e.what() << std::endl;
+        utils::m_log.warn(e.what());
     }
 
+    utils::m_log.info("console detached.");
     FreeConsole();  // detach console (if it's there).
     FreeLibraryAndExitThread((HMODULE)hinstance, 0);
 }
