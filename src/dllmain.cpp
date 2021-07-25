@@ -1,12 +1,15 @@
 #include <Windows.h>
+
 #include <chrono>
 #include <thread>
+
 #include "utils/hook_mgr.h"
 
 auto __stdcall entry_loop(void *hinstance) -> unsigned long {
 #ifdef DEBUG
     AllocConsole();
-    freopen_s((FILE **) stdout, "CONOUT$", "w", stdout); // redirect stdout stream to console.
+    freopen_s((FILE **)stdout, "CONOUT$", "w",
+              stdout);  // redirect stdout stream to console.
 #endif
 
     {
@@ -20,16 +23,17 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
         utils::hook_mgr::finish();
     }
 
-    FreeConsole(); // detach console (if it's there).
-    FreeLibraryAndExitThread((HMODULE) hinstance, 0);
+    FreeConsole();  // detach console (if it's there).
+    FreeLibraryAndExitThread((HMODULE)hinstance, 0);
 }
 
-auto __stdcall DllMain(void *hinstance, const unsigned long reason, void *) -> int {
-    DisableThreadLibraryCalls((HMODULE) hinstance);
+auto __stdcall DllMain(void *hinstance, const unsigned long reason, void *)
+    -> int {
+    DisableThreadLibraryCalls((HMODULE)hinstance);
     if (reason == DLL_PROCESS_ATTACH) {
-        const auto thread = CreateThread(nullptr, 0, entry_loop, hinstance, 0, nullptr);
-        if (thread)
-            CloseHandle(thread);
+        const auto thread =
+            CreateThread(nullptr, 0, entry_loop, hinstance, 0, nullptr);
+        if (thread) CloseHandle(thread);
     }
 
     return TRUE;

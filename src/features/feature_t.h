@@ -15,14 +15,13 @@ namespace features {
 
         bool panic = false;
 
-    private:
+       private:
         static auto _run_func(feature_t* feature) -> void {
-            if (feature->panic)
-                return;
+            if (feature->panic) return;
 
             feature->function();
         }
     };
-}
+}  // namespace features
 
-#endif //INTERNAL_TEMPLATE_FEATURE_T_H
+#endif  // INTERNAL_TEMPLATE_FEATURE_T_H
