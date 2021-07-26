@@ -5,9 +5,9 @@
 
 #include "../process/hooks/example_hook.h"
 
-// #define ADD_HOOK(x)                                                        \
-//    MH_CreateHook(reinterpret_cast<void *>(x::get_address()), x::function, \
-//                  reinterpret_cast<void **>(&x::original))
+#define ADD_HOOK(x)                                                        \
+    MH_CreateHook(reinterpret_cast<void *>(x::get_address()), x::function, \
+                  reinterpret_cast<void **>(&x::original))
 
 namespace utils::hook_mgr {
     auto init() -> bool {
@@ -19,9 +19,7 @@ namespace utils::hook_mgr {
         {
             using namespace process::hooks;
 
-            if (MH_CreateHook(reinterpret_cast<void *>(example_hook::get_address()),
-                              example_hook::function,
-                              reinterpret_cast<void **>(&example_hook::original)) != MH_OK)
+            if (ADD_HOOK(example_hook) != MH_OK)
                 throw std::runtime_error(
                     "utils::hook_mgr::init(): "
                     "MH_CreateHook(example_hook) failed.");
