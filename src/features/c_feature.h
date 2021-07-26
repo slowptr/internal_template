@@ -8,11 +8,8 @@ namespace features {
     class c_feature {
        public:
         auto         get_thread() -> std::thread { return std::thread{_run_func, this}; }
-        virtual auto function() -> void {
-            std::cout << "[WARN] no feature to be executed." << std::endl;
-        }
-
-        bool panic = false;
+        virtual auto function() -> void = 0;
+        bool         panic              = false;
 
        private:
         static auto _run_func(c_feature* feature) -> void {

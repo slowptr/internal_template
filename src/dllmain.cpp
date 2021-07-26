@@ -11,7 +11,8 @@
 auto __stdcall entry_loop(void *hinstance) -> unsigned long {
 #ifdef DEBUG
     AllocConsole();
-    freopen_s((FILE **)stdout, "CONOUT$", "w", stdout);  // redirect stdout stream to console.
+    freopen_s(reinterpret_cast<FILE **>(stdout), "CONOUT$", "w",
+              stdout);  // redirect stdout stream to console.
     utils::g_log.set_console_handle(GetStdHandle(STD_OUTPUT_HANDLE));
 #endif
 
@@ -31,14 +32,14 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
 
     utils::g_log.info("console detached.");
     FreeConsole();  // detach console (if it's there).
-    FreeLibraryAndExitThread((HMODULE)hinstance, 0);
+    FreeLibraryAndExitThread(static_cast<HMODULE>(hinstance), 0);
 }
 
 auto __stdcall DllMain(void *hinstance, const unsigned long reason, void *) -> int {
-    DisableThreadLibraryCalls((HMODULE)hinstance);
+    DisableThreadLibraryCalls(static_cast<HMODULE>(hinstance));
     if (reason == DLL_PROCESS_ATTACH) {
-        const auto thread = CreateThread(nullptr, 0, entry_loop, hinstance, 0, nullptr);
-        if (thread) CloseHandle(thread);
+        if (const auto thread = CreateThread(nullptr, 0, entry_loop, hinstance, 0, nullptr); thread)
+            CloseHandle(thread);
     }
 
     return TRUE;

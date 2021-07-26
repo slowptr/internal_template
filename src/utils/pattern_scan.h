@@ -7,12 +7,13 @@
 #include <vector>
 
 namespace utils {
-    auto pattern_scan(std::string_view module_name, std::string_view pattern) -> uint32_t {
+    inline auto pattern_scan(const std::string_view module_name, const std::string_view pattern)
+        -> uint32_t {
         static auto pattern_to_byte = [](const char *pattern) -> std::vector<std::size_t> {
             std::vector<std::size_t> bytes;
 
-            auto start = const_cast<char *>(pattern);
-            auto end   = const_cast<char *>(pattern) + std::strlen(pattern);
+            const auto start = const_cast<char *>(pattern);
+            const auto end   = const_cast<char *>(pattern) + std::strlen(pattern);
             for (auto current = start; current < end; ++current) {
                 if (*current == '?') {
                     ++current;
@@ -26,22 +27,22 @@ namespace utils {
             return bytes;
         };
 
-        auto module = GetModuleHandle(module_name.data());
+        const auto module = GetModuleHandle(module_name.data());
         if (!module) return -1;
 
         MODULEINFO module_info;
         if (!K32GetModuleInformation(GetCurrentProcess(), module, &module_info, sizeof(MODULEINFO)))
             return -1;
 
-        auto image_bytes = reinterpret_cast<unsigned char *>(module);
+        const auto image_bytes = reinterpret_cast<unsigned char *>(module);
         if (!image_bytes) return -1;
 
-        auto image_size = module_info.SizeOfImage;
+        const auto image_size = module_info.SizeOfImage;
         if (!image_size) return -1;
 
-        auto pattern_bytes   = pattern_to_byte(pattern.data());
-        auto signature_size  = pattern_bytes.size();
-        auto signature_bytes = pattern_bytes.data();
+        auto       pattern_bytes   = pattern_to_byte(pattern.data());
+        const auto signature_size  = pattern_bytes.size();
+        const auto signature_bytes = pattern_bytes.data();
 
         for (unsigned long i = 0; i < image_size - signature_size; ++i) {
             bool byte_sequence_found = true;
@@ -58,16 +59,17 @@ namespace utils {
         return -1;
     }
 
-    auto pattern_scan(std::string_view module_name, std::string_view pattern, int offset)
-        -> uint32_t {
+    inline auto pattern_scan(const std::string_view module_name, const std::string_view pattern,
+                             const int offset) -> uint32_t {
         return pattern_scan(module_name, pattern) + offset;
     }
 
-    auto pattern_scan_relative_call(std::string_view module_name, std::string_view pattern,
-                                    int offset) -> uint32_t {
+    inline auto pattern_scan_relative_call(const std::string_view module_name,
+                                           const std::string_view pattern, const int offset)
+        -> uint32_t {
         // OPCODE: 0xE8
-        auto *sig = (uint32_t *)(pattern_scan(module_name, pattern) + offset);
-        return (uint32_t)sig + (uint32_t)*sig + 4;
+        auto *sig = reinterpret_cast<uint32_t *>(pattern_scan(module_name, pattern) + offset);
+        return reinterpret_cast<uint32_t>(sig) + *sig + 4;
     }
 }  // namespace utils
 

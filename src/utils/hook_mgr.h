@@ -10,7 +10,7 @@
                   reinterpret_cast<void **>(&x::original))
 
 namespace utils::hook_mgr {
-    auto init() -> bool {
+    inline auto init() -> bool {
         if (MH_Initialize() != MH_OK)
             throw std::runtime_error(
                 "utils::hook_mgr::init(): "
@@ -33,7 +33,7 @@ namespace utils::hook_mgr {
         return true;
     }
 
-    auto finish() -> bool {
+    inline auto finish() -> bool {
         if (MH_DisableHook(MH_ALL_HOOKS) != MH_OK)
             throw std::runtime_error(
                 "utils::hook_mgr::finish(): "

@@ -8,8 +8,9 @@
 #include "../../utils/pattern_scan.h"
 
 namespace process::hooks::example_hook {
-    auto get_address() -> uint32_t {
-        auto address = utils::pattern_scan("module_name.dll", "AA ?? BB ?? CC ?? DD ?? EE ?? FF");
+    inline auto get_address() -> uint32_t {
+        const auto address =
+            utils::pattern_scan("module_name.dll", "AA ?? BB ?? CC ?? DD ?? EE ?? FF");
 
         std::stringstream stream;
         stream << "process::hooks::example_hook::get_address(): 0x" << std::hex << address;
@@ -19,9 +20,9 @@ namespace process::hooks::example_hook {
     }
 
     using type = void(__cdecl *)(void *);
-    type original;
+    inline type original;
 
-    auto function(void *a1) -> void {
+    inline auto function(void *a1) -> void {
         static std::once_flag flag;
         std::call_once(flag, [&]() {
             utils::g_log.info("process::hooks::example_hook::function() hooking successful.");
