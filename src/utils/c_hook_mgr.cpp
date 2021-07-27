@@ -1,16 +1,15 @@
-#ifndef INTERNAL_TEMPLATE_HOOK_MGR_H
-#define INTERNAL_TEMPLATE_HOOK_MGR_H
+#include "c_hook_mgr.h"
 
 #include <MinHook.h>
 
-#include "../process/hooks/example_hook.h"
+#include "../process/hooks/hooks.h"
 
 #define ADD_HOOK(x)                                                        \
     MH_CreateHook(reinterpret_cast<void *>(x::get_address()), x::function, \
                   reinterpret_cast<void **>(&x::original))
 
-namespace utils::hook_mgr {
-    inline auto init() -> bool {
+namespace utils {
+    auto c_hook_mgr::init() -> bool {
         if (MH_Initialize() != MH_OK)
             throw std::runtime_error(
                 "utils::hook_mgr::init(): "
@@ -32,8 +31,7 @@ namespace utils::hook_mgr {
 
         return true;
     }
-
-    inline auto finish() -> bool {
+    auto c_hook_mgr::finish() -> bool {
         if (MH_DisableHook(MH_ALL_HOOKS) != MH_OK)
             throw std::runtime_error(
                 "utils::hook_mgr::finish(): "
@@ -46,6 +44,4 @@ namespace utils::hook_mgr {
 
         return true;
     }
-}  // namespace utils::hook_mgr
-
-#endif  // INTERNAL_TEMPLATE_HOOK_MGR_H
+}  // namespace utils

@@ -4,7 +4,8 @@
 #include <iostream>
 #include <thread>
 
-#include "utils/hook_mgr.h"
+#include "utils/c_hook_mgr.h"
+#include "utils/c_log.h"
 
 #define DEBUG
 
@@ -13,24 +14,24 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
     AllocConsole();
     freopen_s(reinterpret_cast<FILE **>(stdout), "CONOUT$", "w",
               stdout);  // redirect stdout stream to console.
-    utils::g_log.set_console_handle(GetStdHandle(STD_OUTPUT_HANDLE));
+    utils::g_log->set_console_handle(GetStdHandle(STD_OUTPUT_HANDLE));
 #endif
 
     try {
-        utils::hook_mgr::init();
+        utils::c_hook_mgr::init();
 
         while (!(GetAsyncKeyState(VK_NUMPAD0))) {
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(150ms);
         }
 
-        utils::hook_mgr::finish();
+        utils::c_hook_mgr::finish();
 
     } catch (const std::runtime_error &e) {
-        utils::g_log.warn(e.what());
+        utils::g_log->warn(e.what());
     }
 
-    utils::g_log.info("console detached.");
+    utils::g_log->info("console detached.");
     FreeConsole();  // detach console (if it's there).
     FreeLibraryAndExitThread(static_cast<HMODULE>(hinstance), 0);
 }
