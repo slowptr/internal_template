@@ -1,4 +1,8 @@
 #include "hooks.h"
+#include <mutex>
+
+#include "../../utils/c_log.h"
+#include "../../utils/pattern_scan.h"
 
 namespace process::hooks::example_hook {
     auto get_address() -> uint32_t {

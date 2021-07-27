@@ -1,6 +1,7 @@
 #include "c_hook_mgr.h"
 
 #include <MinHook.h>
+#include <stdexcept>
 
 #include "../process/hooks/hooks.h"
 
