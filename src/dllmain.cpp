@@ -4,6 +4,7 @@
 #include <iostream>
 #include <thread>
 
+#include "utils/c_feature_mgr.h"
 #include "utils/c_hook_mgr.h"
 #include "utils/c_log.h"
 
@@ -19,9 +20,13 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
 
     try {
         utils::c_hook_mgr::init();
+        utils::g_features->init();
 
         while (!(GetAsyncKeyState(VK_NUMPAD0))) {
             using namespace std::chrono_literals;
+
+            utils::g_features->loop();
+
             std::this_thread::sleep_for(150ms);
         }
 

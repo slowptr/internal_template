@@ -4,7 +4,7 @@
 #include "c_feature.h"
 
 namespace features {
-    class c_example_feature : c_feature {
+    class c_example_feature : public c_feature {
         auto function() -> void override;
     };
 
