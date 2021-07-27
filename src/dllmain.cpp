@@ -1,7 +1,6 @@
 #include <Windows.h>
 
 #include <chrono>
-#include <iostream>
 #include <thread>
 
 #include "utils/c_feature_mgr.h"
