@@ -3,13 +3,17 @@
 
 #include <cstdint>
 
-namespace process::hooks::example_hook {
-    extern auto get_address() -> uint32_t;
+#include "../../utils/c_hook.h"
 
-    using type = void(__cdecl *)(void *);
-    inline type original;
+#define ADD_HOOK(name, _type)            \
+    namespace name {                     \
+        using type = _type;              \
+        inline type          original;   \
+        extern utils::c_hook get_hook(); \
+    }
 
-    extern auto function(void *a1) -> void;
-}  // namespace process::hooks::example_hook
+namespace process::hooks {
+    ADD_HOOK(example_hook, void(__cdecl *)())
+}
 
 #endif  // INTERNAL_TEMPLATE_HOOKS_H

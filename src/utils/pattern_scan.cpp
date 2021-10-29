@@ -1,7 +1,8 @@
 #include "pattern_scan.h"
 
-#include <Windows.h>
 #include <Psapi.h>
+#include <Windows.h>
+
 #include <vector>
 
 namespace utils {
@@ -57,14 +58,13 @@ namespace utils {
         return -1;
     }
     auto pattern_scan(const std::string_view module_name, const std::string_view pattern,
-                             const int offset) -> uint32_t {
+                      const int offset) -> uint32_t {
         return pattern_scan(module_name, pattern) + offset;
     }
     auto pattern_scan_relative_call(const std::string_view module_name,
-                                           const std::string_view pattern, const int offset)
-        -> uint32_t {
+                                    const std::string_view pattern, const int offset) -> uint32_t {
         // OPCODE: 0xE8
         auto *sig = reinterpret_cast<uint32_t *>(pattern_scan(module_name, pattern) + offset);
         return reinterpret_cast<uint32_t>(sig) + *sig + 4;
     }
-}
+}  // namespace utils

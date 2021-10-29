@@ -3,8 +3,9 @@
 #include <chrono>
 #include <thread>
 
+#include "process/hooks/hooks.h"
 #include "utils/c_feature_mgr.h"
-#include "utils/c_hook_mgr.h"
+#include "utils/c_hook.h"
 #include "utils/c_log.h"
 
 #define DEBUG
@@ -18,7 +19,11 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
 #endif
 
     try {
-        utils::c_hook_mgr::init();
+        utils::c_hook::initialize();
+        {
+            using namespace process::hooks;
+            example_hook::get_hook().create();
+        }
         utils::g_features->init();
 
         while (!(GetAsyncKeyState(VK_NUMPAD0))) {
@@ -28,9 +33,6 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
 
             std::this_thread::sleep_for(150ms);
         }
-
-        utils::c_hook_mgr::finish();
-
     } catch (const std::runtime_error &e) {
         utils::g_log->warn(e.what());
     }

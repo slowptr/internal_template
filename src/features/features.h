@@ -8,7 +8,6 @@ namespace features {
         auto function() -> void override;
     };
 
-
 }  // namespace features
 
 #endif  // INTERNAL_TEMPLATE_FEATURES_H

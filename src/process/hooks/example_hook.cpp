@@ -1,24 +1,30 @@
-#include "hooks.h"
 #include <mutex>
 
+#include "../../utils/c_hook.h"
 #include "../../utils/c_log.h"
-#include "../../utils/pattern_scan.h"
+#include "hooks.h"
 
-namespace process::hooks::example_hook {
-    auto get_address() -> uint32_t {
-        const auto address =
-            utils::pattern_scan("module_name.dll", "AA ?? BB ?? CC ?? DD ?? EE ?? FF");
+#define NAME   example_hook
+#define NAME_S "example_hook"
 
-        std::stringstream stream;
-        stream << "process::hooks::example_hook::get_address(): 0x" << std::hex << address;
-        utils::g_log->info(stream.str());
-
-        return address;
-    }
-    auto function(void *a1) -> void {
+namespace process::hooks::NAME {
+    void function() {
         static std::once_flag flag;
+        // std::call_once(flag, [&]() { spdlog::info("{0}::function(): called once", NAME_S); });
         std::call_once(flag, [&]() {
-            utils::g_log->info("process::hooks::example_hook::function() hooking successful.");
+            std::stringstream sstream;
+            sstream << NAME_S << "::function(): called once";
+            utils::g_log->info(sstream.str());
         });
+
+        /* return */ original();
     }
-}  // namespace process::hooks::example_hook
+
+    utils::c_hook get_hook() {
+        auto address = 0xDEADBEEF;
+        return {NAME_S,                                 //
+                reinterpret_cast<void *>(address),      //
+                function,                               //
+                reinterpret_cast<void **>(&original)};  //
+    }
+}  // namespace process::hooks::NAME

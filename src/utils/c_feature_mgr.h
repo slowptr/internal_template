@@ -11,10 +11,11 @@ namespace utils {
        public:
         auto init() -> bool;
         auto loop() -> void;
+
        private:
         std::vector<std::unique_ptr<features::c_feature>> _features;
     };
     extern std::unique_ptr<c_feature_mgr> g_features;
-}
+}  // namespace utils
 
 #endif  // INTERNAL_TEMPLATE_C_FEATURE_MGR_H
