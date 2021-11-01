@@ -22,7 +22,6 @@ auto __stdcall entry_loop(void *hinstance) -> unsigned long {
         //
     }
 
-    FreeConsole();  // detach console (if it's there).
     FreeLibraryAndExitThread(static_cast<HMODULE>(hinstance), 0);
 }
 
