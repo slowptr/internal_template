@@ -9,7 +9,6 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 add_library(internal_template SHARED
         src/dllmain.cpp
         src/process/hooks/hooks.h
-        src/process/structs/example_struct_t.h
         src/process/hooks/example_hook.cpp
         src/utils/c_hook.cpp
         src/utils/c_hook.h)
